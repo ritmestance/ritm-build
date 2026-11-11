@@ -97,6 +97,7 @@ jobs:
           # (a password pasted into GitHub often ends with a new line or a space: those aren't part of it)
           ZIP_PASSWORD=$(printf '%s' "$ZIP_PASSWORD" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
           export LC_ALL=C
+          echo "The password used has ${#ZIP_PASSWORD} characters."
           case "$ZIP_PASSWORD" in *[!\ -~]*) echo "::error::ZIP_PASSWORD has letters other than English letters, digits and symbols; 7-Zip on Windows can't match those. Use English letters and digits only."; exit 1;; esac
           VERSION=$(node -p "require('./app/package.json').version")
           :
@@ -174,6 +175,7 @@ jobs:
           # (a password pasted into GitHub often ends with a new line or a space: those aren't part of it)
           ZIP_PASSWORD=$(printf '%s' "$ZIP_PASSWORD" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
           export LC_ALL=C
+          echo "The password used has ${#ZIP_PASSWORD} characters."
           case "$ZIP_PASSWORD" in *[!\ -~]*) echo "::error::ZIP_PASSWORD has letters other than English letters, digits and symbols; 7-Zip on Windows can't match those. Use English letters and digits only."; exit 1;; esac
           VERSION=$(node -p "require('./app/package.json').version")
           :
@@ -231,6 +233,7 @@ jobs:
           # (a password pasted into GitHub often ends with a new line or a space: those aren't part of it)
           ZIP_PASSWORD=$(printf '%s' "$ZIP_PASSWORD" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
           export LC_ALL=C
+          echo "The password used has ${#ZIP_PASSWORD} characters."
           case "$ZIP_PASSWORD" in *[!\ -~]*) echo "::error::ZIP_PASSWORD has letters other than English letters, digits and symbols; 7-Zip on Windows can't match those. Use English letters and digits only."; exit 1;; esac
           VERSION=$(node -p "require('./app/package.json').version")
           :
@@ -270,6 +273,7 @@ jobs:
           # (a password pasted into GitHub often ends with a new line or a space: those aren't part of it)
           ZIP_PASSWORD=$(printf '%s' "$ZIP_PASSWORD" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
           export LC_ALL=C
+          echo "The password used has ${#ZIP_PASSWORD} characters."
           case "$ZIP_PASSWORD" in *[!\ -~]*) echo "::error::ZIP_PASSWORD has letters other than English letters, digits and symbols; 7-Zip on Windows can't match those. Use English letters and digits only."; exit 1;; esac
           VERSION=$(node -p "require('./app/package.json').version")
           cp -r app/web dist-web
