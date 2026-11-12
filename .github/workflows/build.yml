@@ -24,6 +24,43 @@ defaults:
     working-directory: app
 
 jobs:
+  tests:
+    # every test (app, server and bot, Ritm Admin, website and deploy) on the code being built, with the real
+    # libraries installed. The log is public: it shows only the pass/fail lines, never code.
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ritmestance/ritm
+          ref: ${{ inputs.ref }}
+          ssh-key: ${{ secrets.SOURCE_KEY }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund > /dev/null
+          npx playwright install --with-deps chromium webkit firefox > /dev/null
+          npm run sync > /dev/null
+      - name: All tests
+        working-directory: .
+        run: |
+          fail=0
+          check() { # $1 = name, $2 = folder, then the command
+            local name="$1" dir="$2"; shift 2
+            (cd "$dir" && "$@") > "/tmp/$name.tap" 2>&1 || true
+            echo "== $name: $(grep -E '^# pass' "/tmp/$name.tap" | tail -1) $(grep -E '^# fail' "/tmp/$name.tap" | tail -1)"
+            grep -E '^not ok' "/tmp/$name.tap" | sed 's/^/   /' || true
+            grep -qE '^# pass [1-9]' "/tmp/$name.tap" && ! grep -qE '^not ok' "/tmp/$name.tap" || fail=1
+          }
+          check app app node --test
+          check server server npm test
+          check admin admin npm test
+          check deploy . node --test deploy/tests/*.test.mjs
+          [ "$fail" = 0 ] || { echo "::error::Some tests failed (names above)"; exit 1; }
+
   android:
     name: Android APK
     runs-on: ubuntu-latest
